@@ -1,0 +1,18 @@
+---
+# handlers file for web
+- name: Restart Nginx
+  service:
+    name: nginx
+    state: restarted
+    enabled: yes
+
+- name: Reload Nginx
+  service:
+    name: nginx
+    state: reloaded
+
+- name: Restart php-fpm
+  service:
+    name: php{{ php_version }}-fpm
+    state: restarted
+    enabled: yes

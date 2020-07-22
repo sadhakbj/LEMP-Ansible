@@ -1,0 +1,75 @@
+---
+# tasks file for web
+
+- name: Install Latest Nginx
+  apt:
+    name: nginx
+    state: present
+    force: yes
+    update_cache: yes
+  tags: install_nginx
+
+- name: Remove default nginx vhost config file.
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /etc/nginx/sites-available/default
+    - /etc/nginx/sites-enabled/default
+  notify: Restart Nginx
+
+- name: Create Nginx virtual host
+  template:
+    src: vhost.j2
+    dest: /etc/nginx/sites-available/{{ domain_name }}.conf
+  notify: Reload Nginx
+
+- name: Enable Newly added site
+  file:
+    src: "/etc/nginx/sites-available/{{domain_name}}.conf"
+    dest: "/etc/nginx/sites-enabled/{{domain_name}}.conf"
+    state: link
+  notify: Reload Nginx
+
+- name: Ensure nginx is started and enabled to start at boot.
+  service:
+    name: nginx
+    state: started
+    enabled: yes
+
+# PHP Related tasks goes here
+- name: Instal PHP and other php dependencies.
+  apt:
+    name:
+      [
+        "php",
+        "php-curl",
+        "php-dev",
+        "libpcre3-dev",
+        "php-fpm",
+        "php-gd",
+        "php-imap",
+        "php-json",
+        "php-bcmath",
+        "php-tokenizer",
+        "composer",
+      ]
+    state: latest
+    force: yes
+    update_cache: yes
+
+- name: Create web-root directory
+  file:
+    path: /home/deployer/app/{{ domain_name }}
+    state: directory
+
+- name: Upload index.html and info.php files
+  template:
+    src: index.php.j2
+    dest: /home/deployer/app/{{ domain_name }}/index.php
+  notify: Restart Nginx
+
+- name: Remove "apache2" package
+  apt:
+    name: apache2
+    state: absent

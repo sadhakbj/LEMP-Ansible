@@ -1,0 +1,4 @@
+---
+# vars file for web
+php_version: 7.4
+domain_name: asianpaints.test

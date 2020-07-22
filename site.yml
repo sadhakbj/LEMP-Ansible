@@ -1,0 +1,8 @@
+- hosts: lemp
+  remote_user: ubuntu
+  become: true
+
+  roles:
+    - common
+    - web
+    - db

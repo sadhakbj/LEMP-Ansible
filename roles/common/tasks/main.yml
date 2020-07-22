@@ -1,0 +1,36 @@
+---
+# tasks file for common
+- name: Update repository and Upgrade packages
+  apt:
+    upgrade: dist
+    update_cache: yes
+    state: latest
+    force_apt_get: yes
+    cache_valid_time: 3600
+
+- name: Common | Upgrade packages
+  apt: upgrade=safe
+  tags: common_upgrade_packages
+
+- name: Common | Install common packages
+  apt:
+    name:
+      - curl
+      - wget
+      - git-core
+      - ufw
+    state: present
+    update_cache: yes
+  tags: common_install_packages
+
+- name: Ensure group "deployer" exists
+  group:
+    name: deployer
+    state: present
+
+- name: Add the user 'deployer' with a bash shell, appending the group 'deployer' to the user's groups
+  user:
+    name: deployer
+    shell: /bin/bash
+    groups: deployer
+    append: yes

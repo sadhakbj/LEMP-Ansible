@@ -1,0 +1,25 @@
+server {
+    listen 80 default_server;
+    listen [::]:80;
+
+    root /home/deployer/app/{{ domain_name }};
+    index index.php index.html index.htm index.nginx-debian.html;
+
+    server_name {{ domain_name }};
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    # pass PHP scripts to FastCGI server
+    #
+        location ~ \.php$ {
+            try_files $uri =404;
+            fastcgi_split_path_info ^(.+\.php)(/.+)$;
+            fastcgi_pass unix:/var/run/php/php{{ php_version }}-fpm.sock;
+            fastcgi_index index.php;
+            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            include fastcgi_params;
+        }
+
+}
