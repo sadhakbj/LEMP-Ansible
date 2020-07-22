@@ -1,5 +1,5 @@
 ---
 # vars file for db
-db_name: asian-db
-db_user: asian-admin
+db_name: project
+db_user: admin
 db_pass: "*C960D382DB42E57D3BAC33891CF87900DCB1A869"

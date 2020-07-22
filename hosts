@@ -1,2 +1,2 @@
 [lemp]
-asian_paints ansible_host=10.113.128.81
+new_server ansible_host=10.113.128.205

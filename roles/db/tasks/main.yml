@@ -9,11 +9,11 @@
 
 # Configurations
 
-# - name: Setup root password
-#   mysql_user:
-#     name: root
-#     password: "{{ db_pass }}"
-#     login_unix_socket: /var/run/mysqld/mysqld.sock
+- name: Setup root password
+  mysql_user:
+    name: root
+    password: "{{ db_pass }}"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
 
 - name: Removes all anonymous user accounts
   mysql_user:

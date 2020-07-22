@@ -19,6 +19,7 @@
       - wget
       - git-core
       - ufw
+      - unzip
     state: present
     update_cache: yes
   tags: common_install_packages

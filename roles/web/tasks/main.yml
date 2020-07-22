@@ -16,6 +16,7 @@
   with_items:
     - /etc/nginx/sites-available/default
     - /etc/nginx/sites-enabled/default
+    - /var/www/html/
   notify: Restart Nginx
 
 - name: Create Nginx virtual host
