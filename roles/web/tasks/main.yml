@@ -16,7 +16,6 @@
   with_items:
     - /etc/nginx/sites-available/default
     - /etc/nginx/sites-enabled/default
-    - /var/www/html/
   notify: Restart Nginx
 
 - name: Create Nginx virtual host
@@ -43,9 +42,8 @@
   apt:
     name:
       [
-        "php",
-        "php-curl",
         "php-dev",
+        "php-curl",
         "libpcre3-dev",
         "php-fpm",
         "php-gd",
@@ -70,7 +68,6 @@
     dest: /home/deployer/app/{{ domain_name }}/index.php
   notify: Restart Nginx
 
-- name: Remove "apache2" package
+- name: Remove dependencies that are no longer required
   apt:
-    name: apache2
-    state: absent
+    autoremove: yes
