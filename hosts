@@ -1,2 +1,2 @@
 [lemp]
-new_server ansible_host=10.113.128.171
+demo_server ansible_host=10.113.128.225

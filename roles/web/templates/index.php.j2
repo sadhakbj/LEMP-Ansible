@@ -1,5 +1,5 @@
 <html>
-<title>Welcome{{ domain_name}}</title>
+<title>Welcome to : {{ domain_name}}</title>
 <body>
 
 <h1><center>Welcome to:  {{ domain_name }}</center></h1>
@@ -12,6 +12,7 @@
 </h2>
 
 <?php
+echo "Running as: " . exec('whoami');
 phpinfo();
 ?>
 

@@ -57,17 +57,71 @@
     force: yes
     update_cache: yes
 
+- name: Create user specific conf file for php-fpm
+  copy:
+    remote_src: true
+    src: "/etc/php/{{php_version}}/fpm/pool.d/www.conf"
+    dest: "/etc/php/{{php_version}}/fpm/pool.d/{{deploy_user}}.conf"
+  become: true
+
+- name: Set pool name
+  lineinfile:
+    dest: "/etc/php/{{php_version}}/fpm/pool.d/{{deploy_user}}.conf"
+    regexp: "^\\[www]"
+    line: "[{{deploy_user}}]"
+  become: true
+
+- name: Set PHP user
+  lineinfile:
+    dest: "/etc/php/{{php_version}}/fpm/pool.d/{{deploy_user}}.conf"
+    regexp: "^user"
+    line: "user = {{deploy_user}}"
+    state: present
+  become: true
+
+- name: Set PHP group
+  lineinfile:
+    dest: "/etc/php/{{php_version}}/fpm/pool.d/{{deploy_user}}.conf"
+    regexp: "^group"
+    line: "group = {{deploy_user}}"
+    state: present
+  become: true
+
+- name: listen socket
+  lineinfile:
+    dest: "/etc/php/{{php_version}}/fpm/pool.d/{{deploy_user}}.conf"
+    regexp: "^listen \\="
+    line: "listen = /run/php/php{{php_version}}-fpm-{{deploy_user}}.sock"
+    state: present
+  notify: Restart php-fpm
+  become: true
+
+- name: Give User a sudo privilege  to non sudo users.
+  template:
+    src: privilege.j2
+    dest: /etc/sudoers.d/deployer
+    validate: "visudo -cf %s"
+    mode: 0440
+    owner: root
+    group: root
+  tags: sudo_privilege
+
 - name: Create web-root directory
   file:
     path: /home/deployer/app/{{ domain_name }}
     state: directory
+  become: yes
+  become_user: "deployer"
 
 - name: Upload index.html and info.php files
   template:
     src: index.php.j2
     dest: /home/deployer/app/{{ domain_name }}/index.php
-  notify: Restart Nginx
+  notify: Restart php-fpm
+  become: yes
+  become_user: "deployer"
 
+# notify: Restart Nginx
 - name: Remove dependencies that are no longer required
   apt:
     autoremove: yes
