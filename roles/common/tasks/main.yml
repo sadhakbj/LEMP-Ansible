@@ -20,6 +20,7 @@
       - git-core
       - ufw
       - unzip
+      - acl
     state: present
     update_cache: yes
   tags: common_install_packages
@@ -33,5 +34,5 @@
   user:
     name: deployer
     shell: /bin/bash
-    groups: deployer
+    group: "deployer"
     append: yes
