@@ -1,2 +1,2 @@
 [lemp]
-demo_server ansible_host=10.113.128.225
+demo_server ansible_host=10.84.86.197

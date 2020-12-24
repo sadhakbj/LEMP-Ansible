@@ -38,19 +38,30 @@
     enabled: yes
 
 # PHP Related tasks goes here
+- name: Install PHP {{php_version}} PPA Repository
+  apt_repository:
+    repo: 'ppa:ondrej/php'
+  tags:
+    - php
+    
+- name: Install PHP{{php_version}}
+  apt: 
+    name: php{{php_version}}
+    state: latest
+
 - name: Instal PHP and other php dependencies.
   apt:
     name:
       [
-        "php-dev",
-        "php-curl",
+        "php{{php_version}}-dev",
+        "php{{php_version}}-curl",
         "libpcre3-dev",
-        "php-fpm",
-        "php-gd",
-        "php-imap",
-        "php-json",
-        "php-bcmath",
-        "php-tokenizer",
+        "php{{php_version}}-fpm",
+        "php{{php_version}}-gd",
+        "php{{php_version}}-imap",
+        "php{{php_version}}-json",
+        "php{{php_version}}-bcmath",
+        "php{{php_version}}-tokenizer",
         "composer",
       ]
     state: latest
@@ -99,7 +110,7 @@
 - name: Give User a sudo privilege  to non sudo users.
   template:
     src: privilege.j2
-    dest: /etc/sudoers.d/deployer
+    dest: /etc/sudoers.d/{{deploy_user}}
     validate: "visudo -cf %s"
     mode: 0440
     owner: root
@@ -108,20 +119,21 @@
 
 - name: Create web-root directory
   file:
-    path: /home/deployer/app/{{ domain_name }}
+    path: /home/{{deploy_user}}/app/{{ domain_name }}
     state: directory
   become: yes
-  become_user: "deployer"
+  become_user: "{{ deploy_user }}"
 
 - name: Upload index.html and info.php files
   template:
     src: index.php.j2
-    dest: /home/deployer/app/{{ domain_name }}/index.php
-  notify: Restart php-fpm
+    dest: /home/{{deploy_user}}/app/{{ domain_name }}/index.php
+  notify: 
+    - Restart php-fpm
+    - Restart Nginx
   become: yes
-  become_user: "deployer"
+  become_user: "{{deploy_user}}"
 
-# notify: Restart Nginx
 - name: Remove dependencies that are no longer required
   apt:
     autoremove: yes

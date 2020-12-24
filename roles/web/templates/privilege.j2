@@ -1,2 +1,2 @@
 %{{deploy_user}} ALL=(ALL:ALL) NOPASSWD: /usr/sbin/service nginx *
-%{{deploy_user}} ALL=(ALL:ALL) NOPASSWD: /usr/sbin/service php7.4-fpm restart
+%{{deploy_user}} ALL=(ALL:ALL) NOPASSWD: /usr/sbin/service php{{php_version}}-fpm restart

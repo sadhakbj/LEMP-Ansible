@@ -1,5 +1,5 @@
 ---
 # vars file for web
-php_version: 7.4
+php_version: 8.0
 domain_name: ansiblemp.demo
 deploy_user: deployer
